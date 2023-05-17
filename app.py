@@ -321,7 +321,7 @@ def get_data(browser , selected_country , start_time):
         page_number += 1
 
     # 全ての detailページで情報を取得
-    st.write("detailページ : 全", len(all_detail_URLs) , "個")
+    st.write(f"<h5>detailページ : 全{len(all_detail_URLs)}個</h5>", unsafe_allow_html=True)
 
     #商品名、場所、詳細ページURLをマルチスレッドの引数に格納
     mulch_argu_list = []
@@ -339,7 +339,7 @@ def get_data(browser , selected_country , start_time):
     chunked_mulch_argu_list = split_list(mulch_argu_list, mulch_divide)
     chunked_data_list = []
 
-    st.write("detailページを ", mulch_divide , "個ずつに分割して並列処理")
+    st.write(f"<h5>detailページを{mulch_divide}個ずつに分割して並列処理</h5>", unsafe_allow_html=True)
     loop = 1
     for divided_mulch_argu_list in chunked_mulch_argu_list:
         st.write(f"<h4>{loop}個目 / {len(chunked_mulch_argu_list)}個</h4>", unsafe_allow_html=True)
