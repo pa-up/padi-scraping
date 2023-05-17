@@ -96,7 +96,7 @@ def page_padi_com(browser , name , place1 , place2 , detail_url):
     except AttributeError:
         Activities = ""
     try:
-        Conservation = soup.select_one('div.info > p').text
+        Conservation = soup.select_one('#description > div > div.dive-center-infobox > div.left-side > div:nth-child(2) > div > p').text
     except AttributeError:
         Conservation = ""
     try:
@@ -186,7 +186,7 @@ def page_padi_com(browser , name , place1 , place2 , detail_url):
             'twitter':twitter,
             'tickok':tickok,
             'youtube':youtube,
-            'メールアドレス':mail,
+            'mail':mail,
             'PHONE':PHONE,
             'ADDRESS':ADDRESS,
             'GMAP':GMAP,
@@ -340,14 +340,22 @@ def main():
         browser = browser_setup()
         get_data(browser , selected_country , start_time)
         df = pd.DataFrame(item_ls)
-        csv = df.to_csv(index=False)
 
         # CSVファイルのダウンロードボタンを表示
+        csv = df.to_csv(index=False)
         st.download_button(
             label='CSVをダウンロード',
             data=csv,
             file_name='padiデータ.csv',
             mime='text/csv'
+        )
+        # エクセルファイルのダウンロードボタンを表示
+        excel = df.to_excel(index=False)
+        st.download_button(
+            label='エクセルファイルをダウンロード',
+            data=excel,
+            file_name='padiデータ.xlsx',
+            mime='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
         )
 
 
