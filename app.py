@@ -78,7 +78,7 @@ def page_padi_com(browser , name , place1 , place2 , detail_url):
     # detailのページにアクセス
     browser.get(detail_url)
     st.write("detail_url : " , detail_url)
-    time.sleep(3)
+    time.sleep(1)
 
     # ページのHTML要素を取得
     page_html = browser.page_source
