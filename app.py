@@ -1,5 +1,6 @@
 import streamlit as st
 import pandas as pd
+import numpy as np
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
@@ -11,6 +12,7 @@ from webdriver_manager.chrome import ChromeDriverManager
 from webdriver_manager.core.utils import ChromeType
 from selenium.webdriver.chrome import service as fs
 import time
+import concurrent.futures
 from PIL import Image
 
 def format_duration(seconds):
@@ -74,7 +76,12 @@ def insert_newlines(keyword_list, target):
     return target
 
 
-def page_padi_com(browser , name , place1 , place2 , detail_url):
+def page_padi_com(browser , name , place1 , place2 , detail_url , loop , start_time):
+    st.write(f"<h4>{loop + 1}個目</h4>", unsafe_allow_html=True)
+    current_time = time.time()
+    elapsed_time = format_duration( round(current_time - start_time) )
+    st.write("経過時間 : " , elapsed_time)
+    
     # detailのページにアクセス
     browser.get(detail_url)
     st.write("detail_url : " , detail_url)
@@ -225,6 +232,13 @@ def page_shift_button(browser):
     return next_page_is_valid
 
 
+def mulch_page_padi_com(mulch_argu):
+    browser , name , place1 , place2 , detail_url = \
+    mulch_argu[0] , browser[1] , mulch_argu[2] , browser[3] , mulch_argu[4]
+    data = page_padi_com(browser , name , place1 , place2 , detail_url)
+    return data
+
+
 def get_data(browser , selected_country , start_time):
     all_names = []
     all_places = []
@@ -307,22 +321,42 @@ def get_data(browser , selected_country , start_time):
         page_number += 1
 
 
+    # # 全ての detailページで情報を取得
+    # st.write("all_detail_URLs : ", len(all_detail_URLs) , "個")
+    # for loop in range( len(all_detail_URLs) ):
+    #     st.write(f"<h4>{loop + 1}個目</h4>", unsafe_allow_html=True)
+
+    #     current_time = time.time()
+    #     elapsed_time = format_duration( round(current_time - start_time) )
+    #     st.write("経過時間 : " , elapsed_time)
+
+    #     #商品名、場所、詳細ページURLを取得
+    #     name = all_names[loop]
+    #     place = all_places[loop]
+    #     place1 , place2 = place.split(", ")[1] , place.split(", ")[0]
+    #     detail_url = all_detail_URLs[loop]
+    #     data = page_padi_com(browser , name , place1 , place2 , detail_url)
+    #     item_ls.append(data)
+
     # 全ての detailページで情報を取得
     st.write("all_detail_URLs : ", len(all_detail_URLs) , "個")
-    for loop in range( len(all_detail_URLs) ):
-        st.write(f"<h4>{loop + 1}個目</h4>", unsafe_allow_html=True)
 
-        current_time = time.time()
-        elapsed_time = format_duration( round(current_time - start_time) )
-        st.write("経過時間 : " , elapsed_time)
-
-        #商品名、場所、詳細ページURLを取得
+    #商品名、場所、詳細ページURLをマルチスレッドの引数に格納
+    mulch_argu_list = []
+    for loop in range( len(all_detail_URLs) ) :
         name = all_names[loop]
         place = all_places[loop]
         place1 , place2 = place.split(", ")[1] , place.split(", ")[0]
         detail_url = all_detail_URLs[loop]
-        data = page_padi_com(browser , name , place1 , place2 , detail_url)
-        item_ls.append(data)
+
+        mulch_argu_list.append([
+            browser , name , place1 , place2 , detail_url , loop , start_time
+        ])
+    
+    with concurrent.futures.ThreadPoolExecutor() as executor:
+        data_list = executor.map(mulch_page_padi_com , mulch_argu_list)
+    data_list = list(data_list)
+    return data_list
 
 
 def main():
@@ -338,8 +372,8 @@ def main():
         start_time = time.time()
 
         browser = browser_setup()
-        get_data(browser , selected_country , start_time)
-        df = pd.DataFrame(item_ls)
+        data_list = get_data(browser , selected_country , start_time)
+        df = pd.DataFrame(data_list)
 
         # CSVファイルのダウンロードボタンを表示
         csv = df.to_csv(index=False)
