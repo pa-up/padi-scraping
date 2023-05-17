@@ -197,7 +197,8 @@ def page_padi_com(browser , name , place1 , place2 , detail_url):
     return data
 
 
-def st_image_display(file_name):
+def screenshot_image_display(browser , file_name):
+    browser.save_screenshot(file_name)
     image = Image.open(file_name)
     st.image(image, caption=file_name)
 
@@ -214,18 +215,18 @@ def page_shift_button(browser):
             if scroll_6300:
                 browser.execute_script("window.scrollBy(0, 6300)")
             time.sleep(2)
-            browser.save_screenshot('scrollBy_6300.png')
+            screenshot_image_display(browser , 'scrollBy_6300.png')
             page_shift_button.click()
             break
         except TimeoutException:
             next_page_is_valid = False
-            browser.save_screenshot('worst_scroll.png')
+            screenshot_image_display(browser , 'worst_scroll.png')
             break
         except ElementClickInterceptedException:
             browser.execute_script("window.scrollBy(0, -500)")
             scroll_6300 = False
             time.sleep(2)
-            browser.save_screenshot('scrollBy_minus_500.png')
+            screenshot_image_display(browser , 'scrollBy_minus_500.png')
     return next_page_is_valid
 
 
