@@ -245,6 +245,8 @@ def get_data(browser , selected_country , start_time):
             get_url(browser , selected_country)
             time.sleep(3)
             try:
+                screenshot_image_display(browser , 'ウィンドウ幅マックス前.png')
+                browser.maximize_window()
                 screenshot_image_display(browser , 'デリートボタン前.png')
                 delete_popup_button = browser.find_element(By.CSS_SELECTOR, 'body > div.ReactModalPortal > div > div > span')
                 delete_popup_button.click()
