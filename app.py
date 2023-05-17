@@ -28,7 +28,7 @@ def browser_setup():
     """ブラウザを起動する関数"""
     #ブラウザの設定
     options = webdriver.ChromeOptions()
-    options.add_argument('--headless')
+    # options.add_argument('--headless')
     options.add_argument('--no-sandbox')
     options.add_argument('--disable-dev-shm-usage')
     #ブラウザの起動（webdriver_managerによりドライバーをインストール）
@@ -294,7 +294,6 @@ def get_data(browser , selected_country , start_time):
     # 全ての detailページで情報を取得
     st.write("all_detail_URLs : ", len(all_detail_URLs) , "個")
     for loop in range( len(all_detail_URLs) ):
-        st.write(loop + 1, "個目")
         st.write(f"<h4>{loop + 1}個目</h4>", unsafe_allow_html=True)
 
         current_time = time.time()
