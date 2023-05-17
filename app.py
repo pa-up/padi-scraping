@@ -76,7 +76,7 @@ def insert_newlines(keyword_list, target):
     return target
 
 
-def page_padi_com(name , place1 , place2 , detail_url):
+def detail_page_padi(name , place1 , place2 , detail_url):
     # detailのページにアクセス
     detail_browser = browser_setup()
     detail_browser.get(detail_url)
@@ -234,10 +234,10 @@ def merge_lists(chunked_list):
     return [item for sublist in chunked_list for item in sublist]
 
 
-def mulch_page_padi_com(mulch_argu):
+def mulch_detail_page_padi(mulch_argu):
     name , place1 , place2 , detail_url , loop , start_time = \
     mulch_argu[0] , mulch_argu[1] , mulch_argu[2] , mulch_argu[3] , mulch_argu[4] , mulch_argu[5]
-    data = page_padi_com(name , place1 , place2 , detail_url , loop , start_time)
+    data = detail_page_padi(name , place1 , place2 , detail_url , loop , start_time)
     return data
 
 
@@ -309,8 +309,6 @@ def get_data(browser , selected_country , start_time):
             places = [element.text for element in places_elements]
         except AttributeError:
             places = ["" for _ in range( len(places_elements) )]
-        
-        st.write("len(names) : " , len(names) , " , " , "len(places) : " , len(places))
 
         # detailのURLを取得
         detail_a_elements = browser.find_elements(By.CSS_SELECTOR, 'div.relative > div.list--LcIm5 > a')
@@ -323,7 +321,7 @@ def get_data(browser , selected_country , start_time):
         page_number += 1
 
     # 全ての detailページで情報を取得
-    st.write("all_detail_URLs : ", len(all_detail_URLs) , "個")
+    st.write("detailページ : 全", len(all_detail_URLs) , "個")
 
     #商品名、場所、詳細ページURLをマルチスレッドの引数に格納
     mulch_argu_list = []
@@ -341,16 +339,16 @@ def get_data(browser , selected_country , start_time):
     chunked_mulch_argu_list = split_list(mulch_argu_list, mulch_divide)
     chunked_data_list = []
 
-    st.write("detailを ", mulch_divide , "個ずつに分割して並列処理")
+    st.write("detailページを ", mulch_divide , "個ずつに分割して並列処理")
     loop = 1
     for divided_mulch_argu_list in chunked_mulch_argu_list:
-        st.write(f"<h4>{loop + 1}個目 / {chunked_mulch_argu_list}個</h4>", unsafe_allow_html=True)
+        st.write(f"<h4>{loop + 1}個目 / {len(chunked_mulch_argu_list)}個</h4>", unsafe_allow_html=True)
         current_time = time.time()
         elapsed_time = format_duration( round(current_time - start_time) )
         st.write("経過時間 : " , elapsed_time)
 
         with concurrent.futures.ThreadPoolExecutor() as executor:
-            divided_data_list = executor.map(mulch_page_padi_com , divided_mulch_argu_list)
+            divided_data_list = executor.map(mulch_detail_page_padi , divided_mulch_argu_list)
         chunked_data_list.append( list(divided_data_list) )
 
         loop += 1
