@@ -331,7 +331,7 @@ def get_data(browser , selected_country , start_time):
         detail_url = all_detail_URLs[loop]
 
         mulch_argu_list.append([
-            name , place1 , place2 , detail_url , loop , start_time
+            name , place1 , place2 , detail_url
         ])
     
     mulch_divide = 20
