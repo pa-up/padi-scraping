@@ -207,7 +207,6 @@ def page_shift_button(browser):
     wait = WebDriverWait(browser, 10)
     next_page_is_valid = True
     scroll_6300 = True
-    screenshot_image_display(browser , 'ページ切り替え前.png')
     while True:
         try:
             page_shift_button = wait.until(EC.element_to_be_clickable((By.CSS_SELECTOR, '#dsl-list > div > div.pagination--3KOqw > i.arrow--26Z62.padi-icons.padi-icons--carret-right')))
@@ -262,7 +261,6 @@ def get_data(browser , selected_country , start_time):
                 break
         
         time.sleep(3)
-        screenshot_image_display(browser , 'デリートボタン後.png')
 
         url = browser.current_url
         count_url = 'https://www.padi.com/ja/dive-shops/' + selected_country + '/' + "?page=" + str(page_number)
