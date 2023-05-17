@@ -382,15 +382,6 @@ def main():
             file_name='padiデータ.csv',
             mime='text/csv'
         )
-        # ダウンロードボタンの表示
-        excel_file_name = 'padiデータ.xlsx'
-        if st.button('エクセルファイルで取得'):
-            # データをエクセルファイルに保存
-            df.to_excel(excel_file_name, index=False)
-            # ダウンロードリンクの生成
-            with open(excel_file_name, 'rb') as f:
-                st.download_button(label='ダウンロード', data=f, file_name=excel_file_name, mime='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
-
 
 if __name__ == '__main__':
     main()
