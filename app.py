@@ -11,6 +11,7 @@ from webdriver_manager.chrome import ChromeDriverManager
 from webdriver_manager.core.utils import ChromeType
 from selenium.webdriver.chrome import service as fs
 import time
+from PIL import Image
 
 def format_duration(seconds):
     minutes, seconds = divmod(seconds, 60)
@@ -196,10 +197,15 @@ def page_padi_com(browser , name , place1 , place2 , detail_url):
     return data
 
 
+def st_image_display(file_name):
+    image = Image.open(file_name)
+    st.image(image, caption=file_name)
+
+
 def page_shift_button(browser):
     """ ボタンを押してページを繰り返す関数 """
     # ページ切り替えボタン
-    wait = WebDriverWait(browser, 20)
+    wait = WebDriverWait(browser, 100)
     next_page_is_valid = True
     scroll_6300 = True
     while True:
@@ -208,15 +214,18 @@ def page_shift_button(browser):
             if scroll_6300:
                 browser.execute_script("window.scrollBy(0, 6300)")
             time.sleep(2)
+            browser.save_screenshot('scrollBy_6300.png')
             page_shift_button.click()
             break
         except TimeoutException:
             next_page_is_valid = False
+            browser.save_screenshot('worst_scroll.png')
             break
         except ElementClickInterceptedException:
             browser.execute_script("window.scrollBy(0, -500)")
             scroll_6300 = False
             time.sleep(2)
+            browser.save_screenshot('scrollBy_minus_500.png')
     return next_page_is_valid
 
 
@@ -231,7 +240,7 @@ def get_data(browser , selected_country , start_time):
     while next_page_is_valid:
         if page_number == 1:
             get_url(browser , selected_country)
-            time.sleep(5)
+            time.sleep(3)
             try:
                 delete_popup_button = browser.find_element(By.CSS_SELECTOR, 'body > div.ReactModalPortal > div > div > span')
                 delete_popup_button.click()
