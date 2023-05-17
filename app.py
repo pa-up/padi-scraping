@@ -28,7 +28,7 @@ def browser_setup():
     """ブラウザを起動する関数"""
     #ブラウザの設定
     options = webdriver.ChromeOptions()
-    # options.add_argument('--headless')
+    options.add_argument('--headless')
     options.add_argument('--no-sandbox')
     options.add_argument('--disable-dev-shm-usage')
     #ブラウザの起動（webdriver_managerによりドライバーをインストール）
@@ -207,7 +207,7 @@ def page_shift_button(browser):
             page_shift_button = wait.until(EC.element_to_be_clickable((By.CSS_SELECTOR, '#dsl-list > div > div.pagination--3KOqw > i.arrow--26Z62.padi-icons.padi-icons--carret-right')))
             if scroll_6300:
                 browser.execute_script("window.scrollBy(0, 6300)")
-            time.sleep(1)
+            time.sleep(2)
             page_shift_button.click()
             break
         except TimeoutException:
@@ -216,7 +216,7 @@ def page_shift_button(browser):
         except ElementClickInterceptedException:
             browser.execute_script("window.scrollBy(0, -500)")
             scroll_6300 = False
-            time.sleep(1)
+            time.sleep(2)
     return next_page_is_valid
 
 
@@ -231,7 +231,7 @@ def get_data(browser , selected_country , start_time):
     while next_page_is_valid:
         if page_number == 1:
             get_url(browser , selected_country)
-            time.sleep(2)
+            time.sleep(5)
             try:
                 delete_popup_button = browser.find_element(By.CSS_SELECTOR, 'body > div.ReactModalPortal > div > div > span')
                 delete_popup_button.click()
