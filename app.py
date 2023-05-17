@@ -235,9 +235,9 @@ def merge_lists(chunked_list):
 
 
 def mulch_detail_page_padi(mulch_argu):
-    name , place1 , place2 , detail_url , loop , start_time = \
-    mulch_argu[0] , mulch_argu[1] , mulch_argu[2] , mulch_argu[3] , mulch_argu[4] , mulch_argu[5]
-    data = detail_page_padi(name , place1 , place2 , detail_url , loop , start_time)
+    name , place1 , place2 , detail_url = \
+    mulch_argu[0] , mulch_argu[1] , mulch_argu[2] , mulch_argu[3]
+    data = detail_page_padi(name , place1 , place2 , detail_url)
     return data
 
 
@@ -341,7 +341,7 @@ def get_data(browser , selected_country , start_time):
     st.write("detailページを ", mulch_divide , "個ずつに分割して並列処理")
     loop = 1
     for divided_mulch_argu_list in chunked_mulch_argu_list:
-        st.write(f"<h4>{loop + 1}個目 / {len(chunked_mulch_argu_list)}個</h4>", unsafe_allow_html=True)
+        st.write(f"<h4>{loop}個目 / {len(chunked_mulch_argu_list)}個</h4>", unsafe_allow_html=True)
         current_time = time.time()
         elapsed_time = format_duration( round(current_time - start_time) )
         st.write("経過時間 : " , elapsed_time)
