@@ -244,9 +244,19 @@ def get_data(browser , selected_country , start_time):
         if page_number == 1:
             get_url(browser , selected_country)
             time.sleep(3)
+            
+            # マップが全画面で表示されているケース
             try:
-                screenshot_image_display(browser , 'ウィンドウ幅マックス前.png')
-                browser.maximize_window()
+                screenshot_image_display(browser , 'マップ全画面_状態.png')
+                delete_popup_button = browser.find_element(By.CSS_SELECTOR, '#toggle-btn')
+                delete_popup_button.click()
+                time.sleep(1)
+                screenshot_image_display(browser , 'マップ全画面_撲滅後.png')
+            except NoSuchElementException:
+                time.sleep(1)
+            
+            # ポップアップメッセージが表示されているケース
+            try:
                 time.sleep(3)
                 screenshot_image_display(browser , 'デリートボタン前.png')
                 delete_popup_button = browser.find_element(By.CSS_SELECTOR, 'body > div.ReactModalPortal > div > div > span')
