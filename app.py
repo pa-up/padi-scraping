@@ -252,7 +252,7 @@ def get_data(browser , selected_country , start_time):
     while next_page_is_valid:
         if page_number == 1:
             get_url(browser , selected_country)
-            time.sleep(3)
+            time.sleep(5)
 
             # マップが全画面で表示されているケース
             try:
