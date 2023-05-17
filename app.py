@@ -200,6 +200,7 @@ def page_padi_com(browser , name , place1 , place2 , detail_url):
 def screenshot_image_display(browser , file_name):
     browser.save_screenshot(file_name)
     image = Image.open(file_name)
+    st.write("ファイル名 : " , file_name)
     st.image(image, caption=file_name)
 
 
