@@ -199,7 +199,7 @@ def page_padi_com(browser , name , place1 , place2 , detail_url):
 def page_shift_button(browser):
     """ ボタンを押してページを繰り返す関数 """
     # ページ切り替えボタン
-    wait = WebDriverWait(browser, 10)
+    wait = WebDriverWait(browser, 20)
     next_page_is_valid = True
     scroll_6300 = True
     while True:
@@ -241,7 +241,7 @@ def get_data(browser , selected_country , start_time):
             # ページの切り替え
             next_page_is_valid = page_shift_button(browser)
             if not next_page_is_valid:
-                st.write(f"<h5>全ページの name , place , detail_URL を取得完了</h5>", unsafe_allow_html=True)
+                st.write(f"<h3>全ページの name , place , detail_URL を取得完了</h3>", unsafe_allow_html=True)
                 break
         
         time.sleep(3)
