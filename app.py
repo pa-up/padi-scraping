@@ -76,12 +76,7 @@ def insert_newlines(keyword_list, target):
     return target
 
 
-def page_padi_com(name , place1 , place2 , detail_url , loop , start_time):
-    st.write(f"<h4>{loop + 1}個目</h4>", unsafe_allow_html=True)
-    current_time = time.time()
-    elapsed_time = format_duration( round(current_time - start_time) )
-    st.write("経過時間 : " , elapsed_time)
-    
+def page_padi_com(name , place1 , place2 , detail_url):
     # detailのページにアクセス
     detail_browser = browser_setup()
     detail_browser.get(detail_url)
@@ -327,24 +322,6 @@ def get_data(browser , selected_country , start_time):
             all_detail_URLs.append(detail_URLs[k])
         page_number += 1
 
-
-    # # 全ての detailページで情報を取得
-    # st.write("all_detail_URLs : ", len(all_detail_URLs) , "個")
-    # for loop in range( len(all_detail_URLs) ):
-    #     st.write(f"<h4>{loop + 1}個目</h4>", unsafe_allow_html=True)
-
-    #     current_time = time.time()
-    #     elapsed_time = format_duration( round(current_time - start_time) )
-    #     st.write("経過時間 : " , elapsed_time)
-
-    #     #商品名、場所、詳細ページURLを取得
-    #     name = all_names[loop]
-    #     place = all_places[loop]
-    #     place1 , place2 = place.split(", ")[1] , place.split(", ")[0]
-    #     detail_url = all_detail_URLs[loop]
-    #     data = page_padi_com(browser , name , place1 , place2 , detail_url)
-    #     item_ls.append(data)
-
     # 全ての detailページで情報を取得
     st.write("all_detail_URLs : ", len(all_detail_URLs) , "個")
 
@@ -360,15 +337,23 @@ def get_data(browser , selected_country , start_time):
             name , place1 , place2 , detail_url , loop , start_time
         ])
     
-    chunked_mulch_argu_list = split_list(mulch_argu_list, 20)
+    mulch_divide = 20
+    chunked_mulch_argu_list = split_list(mulch_argu_list, mulch_divide)
     chunked_data_list = []
-    st.write("chunked_mulch_argu_list : ", len(chunked_mulch_argu_list) , "個")
+
+    st.write("detailを ", mulch_divide , "個ずつに分割して並列処理")
+    loop = 1
     for divided_mulch_argu_list in chunked_mulch_argu_list:
-        st.write("divided_mulch_argu_list : ", len(divided_mulch_argu_list) , "個")
+        st.write(f"<h4>{loop + 1}個目 / {chunked_mulch_argu_list}個</h4>", unsafe_allow_html=True)
+        current_time = time.time()
+        elapsed_time = format_duration( round(current_time - start_time) )
+        st.write("経過時間 : " , elapsed_time)
+
         with concurrent.futures.ThreadPoolExecutor() as executor:
             divided_data_list = executor.map(mulch_page_padi_com , divided_mulch_argu_list)
         chunked_data_list.append( list(divided_data_list) )
-        st.write("chunked_data_list : ", len(chunked_data_list) , "個")
+
+        loop += 1
     
     data_list = merge_lists(chunked_data_list)
     st.write("data_list : ", len(data_list) , "個")
@@ -400,11 +385,12 @@ def main():
             mime='text/csv'
         )
         # エクセルファイルのダウンロードボタンを表示
-        excel = df.to_excel(index=False)
+        excel_file_name = 'padiデータ.xlsx'
+        excel = df.to_excel(excel_file_name , index=False)
         st.download_button(
             label='エクセルファイルをダウンロード',
             data=excel,
-            file_name='padiデータ.xlsx',
+            file_name=excel_file_name,
             mime='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
         )
 
