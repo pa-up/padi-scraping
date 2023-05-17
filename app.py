@@ -377,20 +377,19 @@ def main():
         # CSVファイルのダウンロードボタンを表示
         csv = df.to_csv(index=False)
         st.download_button(
-            label='CSVをダウンロード',
+            label='CSVで取得',
             data=csv,
             file_name='padiデータ.csv',
             mime='text/csv'
         )
-        # エクセルファイルのダウンロードボタンを表示
+        # ダウンロードボタンの表示
         excel_file_name = 'padiデータ.xlsx'
-        excel = df.to_excel(excel_file_name , index=False)
-        st.download_button(
-            label='エクセルファイルをダウンロード',
-            data=excel,
-            file_name=excel_file_name,
-            mime='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
-        )
+        if st.button('エクセルファイルで取得'):
+            # データをエクセルファイルに保存
+            df.to_excel(excel_file_name, index=False)
+            # ダウンロードリンクの生成
+            with open(excel_file_name, 'rb') as f:
+                st.download_button(label='ダウンロード', data=f, file_name=excel_file_name, mime='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
 
 
 if __name__ == '__main__':
