@@ -233,6 +233,12 @@ def page_shift_button(browser):
     return next_page_is_valid
 
 
+def split_list(lst, chunk_size):
+    return [lst[i:i+chunk_size] for i in range(0, len(lst), chunk_size)]
+def merge_lists(chunked_list):
+    return [item for sublist in chunked_list for item in sublist]
+
+
 def mulch_page_padi_com(mulch_argu):
     name , place1 , place2 , detail_url , loop , start_time = \
     mulch_argu[0] , mulch_argu[1] , mulch_argu[2] , mulch_argu[3] , mulch_argu[4] , mulch_argu[5]
@@ -354,9 +360,15 @@ def get_data(browser , selected_country , start_time):
             name , place1 , place2 , detail_url , loop , start_time
         ])
     
-    with concurrent.futures.ThreadPoolExecutor() as executor:
-        data_list = executor.map(mulch_page_padi_com , mulch_argu_list)
-    data_list = list(data_list)
+    chunked_mulch_argu_list = split_list(mulch_argu_list, 20)
+    chunked_data_list = []
+    for divided_mulch_argu_list in chunked_mulch_argu_list:
+        st.write("divided_mulch_argu_list : ", len(divided_mulch_argu_list) , "個")
+        with concurrent.futures.ThreadPoolExecutor() as executor:
+            divided_data_list = executor.map(mulch_page_padi_com , divided_mulch_argu_list)
+        chunked_data_list.append( list(divided_data_list) )
+    
+    data_list = merge_lists(chunked_data_list)
     return data_list
 
 
