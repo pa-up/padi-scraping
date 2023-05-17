@@ -83,9 +83,6 @@ def page_padi_com(browser , name , place1 , place2 , detail_url):
     # ページのHTML要素を取得
     page_html = browser.page_source
     soup = BeautifulSoup(page_html, 'html.parser')
-    pretty_soup = soup.prettify()
-    # with open("output_detail" + ".html", "w", encoding="utf-8") as f:
-    #     f.write(pretty_soup)
 
     try:
         detail = soup.select_one('#description > div > div.dive-center-details').text
@@ -217,18 +214,15 @@ def page_shift_button(browser):
             if scroll_6300:
                 browser.execute_script("window.scrollBy(0, 6300)")
             time.sleep(2)
-            screenshot_image_display(browser , 'scrollBy_6300.png')
             page_shift_button.click()
             break
         except TimeoutException:
             next_page_is_valid = False
-            screenshot_image_display(browser , 'worst_scroll.png')
             break
         except ElementClickInterceptedException:
             browser.execute_script("window.scrollBy(0, -500)")
             scroll_6300 = False
             time.sleep(2)
-            screenshot_image_display(browser , 'scrollBy_minus_500.png')
     return next_page_is_valid
 
 
@@ -244,25 +238,22 @@ def get_data(browser , selected_country , start_time):
         if page_number == 1:
             get_url(browser , selected_country)
             time.sleep(3)
-            
+
             # マップが全画面で表示されているケース
             try:
-                screenshot_image_display(browser , 'マップ全画面_状態.png')
                 delete_popup_button = browser.find_element(By.CSS_SELECTOR, '#toggle-btn')
                 delete_popup_button.click()
                 time.sleep(1)
-                screenshot_image_display(browser , 'マップ全画面_撲滅後.png')
             except NoSuchElementException:
                 time.sleep(1)
             
             # ポップアップメッセージが表示されているケース
             try:
-                time.sleep(3)
-                screenshot_image_display(browser , 'デリートボタン前.png')
                 delete_popup_button = browser.find_element(By.CSS_SELECTOR, 'body > div.ReactModalPortal > div > div > span')
                 delete_popup_button.click()
             except NoSuchElementException:
                 time.sleep(1)
+        
         else:
             # ページの切り替え
             next_page_is_valid = page_shift_button(browser)
