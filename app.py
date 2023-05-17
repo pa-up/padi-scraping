@@ -362,13 +362,16 @@ def get_data(browser , selected_country , start_time):
     
     chunked_mulch_argu_list = split_list(mulch_argu_list, 20)
     chunked_data_list = []
+    st.write("chunked_mulch_argu_list : ", len(chunked_mulch_argu_list) , "個")
     for divided_mulch_argu_list in chunked_mulch_argu_list:
         st.write("divided_mulch_argu_list : ", len(divided_mulch_argu_list) , "個")
         with concurrent.futures.ThreadPoolExecutor() as executor:
             divided_data_list = executor.map(mulch_page_padi_com , divided_mulch_argu_list)
         chunked_data_list.append( list(divided_data_list) )
+        st.write("chunked_data_list : ", len(chunked_data_list) , "個")
     
     data_list = merge_lists(chunked_data_list)
+    st.write("data_list : ", len(data_list) , "個")
     return data_list
 
 
