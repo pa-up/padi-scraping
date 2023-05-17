@@ -207,7 +207,7 @@ def screenshot_image_display(browser , file_name):
 def page_shift_button(browser):
     """ ボタンを押してページを繰り返す関数 """
     # ページ切り替えボタン
-    wait = WebDriverWait(browser, 100)
+    wait = WebDriverWait(browser, 10)
     next_page_is_valid = True
     scroll_6300 = True
     while True:
