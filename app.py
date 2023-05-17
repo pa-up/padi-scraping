@@ -252,13 +252,11 @@ def get_data(browser , selected_country , start_time):
     while next_page_is_valid:
         if page_number == 1:
             get_url(browser , selected_country)
-            time.sleep(3)
 
             # マップが全画面で表示されているケース
             try:
                 delete_popup_button = browser.find_element(By.CSS_SELECTOR, '#toggle-btn')
                 delete_popup_button.click()
-                time.sleep(1)
             except NoSuchElementException:
                 time.sleep(1)
             
@@ -313,6 +311,7 @@ def get_data(browser , selected_country , start_time):
         # detailのURLを取得
         detail_a_elements = browser.find_elements(By.CSS_SELECTOR, 'div.relative > div.list--LcIm5 > a')
         detail_URLs = [element.get_attribute('href') for element in detail_a_elements]
+        st.write("detailページ : ", len(detail_URLs) , "個")
 
         for k in range( len(detail_URLs) ):
             all_names.append(names[k])
